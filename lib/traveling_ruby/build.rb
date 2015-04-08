@@ -1,14 +1,12 @@
 module TravelingRuby
   # as in "the build"
   class Build
-    attr_accessor :name, :version, :platforms, :world, :ui
+    attr_accessor :platforms, :world, :ui
 
-    def initialize(name:, version:, platforms:, world:, ui:)
+    def initialize(platforms:, world:, ui:)
+      self.platforms = platforms
       self.world     = world
       self.ui        = ui
-      self.name      = name
-      self.version   = version
-      self.platforms = platforms
     end
 
     def build

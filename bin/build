@@ -17,6 +17,7 @@ common_platform_config = {
   traveling_ruby_version: '20150210-2.2.0',
   compression_format:     '.tar.gz',
   executable:             shell_wrapper,
+  gemfile:                asset_dir + 'Gemfile',
 }
 
 platform_for = lambda do |overrides|
@@ -27,8 +28,6 @@ end
 build = TravelingRuby::Build.new(
   ui:        TravelingRuby::UserInterface.new(outstream: $stdout, errstream: $stderr),
   world:     TravelingRuby::World.new,
-  name:      'seeing_is_believing',
-  version:   '3.0.0.beta.5',
   platforms: [
     platform_for.call(platform_name:          'linux-x86'),
     platform_for.call(platform_name:          'linux-x86_64'),

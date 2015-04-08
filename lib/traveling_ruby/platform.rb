@@ -3,6 +3,7 @@ module TravelingRuby
     # some metaprogramming might be nice here...
     attr_accessor :app_name,
                   :app_version,
+                  :gemfile,
                   :platform_name,
                   :executable_name,
                   :executable,
@@ -12,15 +13,17 @@ module TravelingRuby
 
     def initialize(app_name:,
                    app_version:,
+                   gemfile:,
                    platform_name:,
                    executable_name:,
                    executable:,
                    binary_host:,
                    traveling_ruby_version:,
                    compression_format:)
-      self.app_name               = app_name.to_s
-      self.app_version            = app_version.to_s
-      self.platform_name          = platform_name.to_s
+      self.app_name               = app_name
+      self.app_version            = app_version
+      self.gemfile                = gemfile
+      self.platform_name          = platform_name
       self.executable_name        = executable_name
       self.executable             = executable
       self.binary_host            = binary_host
@@ -36,8 +39,12 @@ module TravelingRuby
       File.join package_dir, 'lib', 'app'
     end
 
+    def binary_name
+      "traveling-ruby-#{traveling_ruby_version}-#{platform_name}.tar.gz"
+    end
+
     def ruby_binary_url
-      File.join binary_host, "traveling-ruby-#{ruby_build_date}-#{ruby_version}-#{platform_name}#{compression_format}"
+      File.join binary_host, binary_name
     end
   end
 end
