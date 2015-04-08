@@ -1,0 +1,58 @@
+Using Bundler for dependency management
+  Looks like I can do (http://myronmars.to/n/dev-blog/2012/03/faster-test-boot-times-with-bundler-standalone)
+    $ bundle install --standalone --binstubs bundle/bin
+    then fix the path in the wrapper script so that it's like
+    ...ruby -r bundle/bundler/setup.rb -S seeing_is_believing
+    or maybe can set PATH/RUBYPATH and RUBYLIB?
+    Seems a lot easier to get the info I need from Bundler than Rubygems.
+
+Using Rubygems for dependency management
+
+  # Some code that might do it (Rubygems)
+    # We can use RUBYLIB to put the dependency in place
+    cache_dir = "#{temp_dir}/unpacked/#{gem_name}-#{gem_version}"
+    world.unpack_gem name: name, version: version, directory: cache_dir
+      basename = "#{name}-#{version}"
+      if File.join(directory, basename).exist?
+        return
+      elsif File.join(cache_dir, basename + '.gem').exist?
+        unpack it
+        return
+      else
+        # taken a bit from `gem fetch`, and a bit from `gem unpack`
+        dep = Gem::Dependency.new 'seeing_is_believing', '3.0.0.beta.5'
+        specs_and_sources, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+        spec, source = specs_and_sources.max_by { |s,| s.version }
+        path       = source.download spec, cache_dir               # "/Users/josh/deleteme/fuckery/seeing_is_believing-3.0.0.beta.5.gem"
+        basename   = File.basename path, '.gem'                    # => "seeing_is_believing-3.0.0.beta.5"
+        target_dir = File.expand_path basename, unpacked_dir
+        package    = Gem::Package.new path
+        package.extract_files target_dir
+      end
+
+  ---------------------------------
+
+  # Some code that looks promising, but I can't tell how to get it to work generally (as in from something like a Gemfile)
+    ruby_root = ~/deleteme/traveling-ruby-tutorial/hello_app/hello-1.0.0-osx/lib/ruby/
+
+    command
+      gem install
+        --local
+        --no-wrappers
+        --no-document
+        --env-shebang $ruby_root/bin/ruby
+        --install-dir $ruby_root/lib/ruby/gems/2.1.0
+        --bindir      $ruby_root/bin
+        --version     3.0.0.beta.5
+        seeing_is_believing
+
+    notes
+      --local       sets :domain      to :local
+      --no-wrappers sets :wrappers    to false
+      --no-document sets :document    to []
+      --install-dir sets :install_dir to passed value
+      --bindir      sets :bin_dir     to passed value
+
+      --vendor ?
+        options[:vendor] = true
+        options[:install_dir] = Gem.vendor_dir
