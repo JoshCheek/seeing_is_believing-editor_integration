@@ -11,7 +11,7 @@ class Platform
                 :app_version,
                 :platform_name,
                 :executable_name,
-                :executable_format,
+                :executable,
                 :binary_host,
                 :traveling_ruby_version,
                 :compression_format
@@ -20,7 +20,7 @@ class Platform
                  app_version:,
                  platform_name:,
                  executable_name:,
-                 executable_format:,
+                 executable:,
                  binary_host:,
                  traveling_ruby_version:,
                  compression_format:)
@@ -28,10 +28,10 @@ class Platform
     self.app_version            = app_version.to_s
     self.platform_name          = platform_name.to_s
     self.executable_name        = executable_name
-    self.executable_format      = executable_format
+    self.executable             = executable
     self.binary_host            = binary_host
     self.traveling_ruby_version = traveling_ruby_version
-    self.compression_format     = ruby_version
+    self.compression_format     = compression_format
   end
 
   def package_dir
@@ -49,7 +49,7 @@ end
 
 
 class Build # the noun version
-  attr_accessor :name, :version, :platform, :fs, :ui
+  attr_accessor :name, :version, :platforms, :fs, :ui
 
   def initialize(name:, version:, platforms:, fs:, ui:)
     self.fs        = fs
@@ -88,16 +88,16 @@ class UserInterface
   end
 end
 
+require 'pathname'
 root_dir      = Pathname.new __dir__
 asset_dir     = root_dir + 'assets'
-batch_wrapper = File.read(asset_dir + 'wrapper.bat')
-shell_wrapper = File.read(asset_dir + 'wrapper.sh')
+batch_wrapper = File.read(asset_dir + 'wrapper.bat') # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-4.md
+shell_wrapper = File.read(asset_dir + 'wrapper.sh')  # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-1.md
 
 common_platform_config = {
   app_name:               'seeing_is_believing',
   app_version:            '3.0.0.beta.5',
   executable_name:        'seeing_is_believing',
-  executable_format:      :unix_shell,
   binary_host:            'http://d6r77u77i8pq3.cloudfront.net/releases',
   traveling_ruby_version: '20150210-2.2.0',
   compression_format:     '.tar.gz',
@@ -111,7 +111,7 @@ end
 
 build = Build.new(
   fs:        FileSystem.new,
-  ui:        UserInterface.new($stdout, $stderr),
+  ui:        UserInterface.new(outstream: $stdout, errstream: $stderr),
   name:      'seeing_is_believing',
   version:   '3.0.0.beta.5',
   platforms: [
