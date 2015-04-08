@@ -13,8 +13,7 @@ class Platform
                 :executable_name,
                 :executable_format,
                 :binary_host,
-                :ruby_build_date,
-                :ruby_version,
+                :traveling_ruby_version,
                 :compression_format
 
   def initialize(app_name:,
@@ -23,18 +22,16 @@ class Platform
                  executable_name:,
                  executable_format:,
                  binary_host:,
-                 ruby_build_date:,
-                 ruby_version:,
+                 traveling_ruby_version:,
                  compression_format:)
-    self.app_name           = app_name.to_s
-    self.app_version        = app_version.to_s
-    self.platform_name      = platform_name.to_s
-    self.executable_name    = executable_name
-    self.executable_format  = executable_format
-    self.binary_host        = binary_host
-    self.ruby_build_date    = ruby_build_date
-    self.ruby_version       = ruby_version
-    self.compression_format = ruby_version
+    self.app_name               = app_name.to_s
+    self.app_version            = app_version.to_s
+    self.platform_name          = platform_name.to_s
+    self.executable_name        = executable_name
+    self.executable_format      = executable_format
+    self.binary_host            = binary_host
+    self.traveling_ruby_version = traveling_ruby_version
+    self.compression_format     = ruby_version
   end
 
   def package_dir
@@ -91,16 +88,26 @@ class UserInterface
   end
 end
 
+root_dir      = Pathname.new __dir__
+asset_dir     = root_dir + 'assets'
+batch_wrapper = File.read(asset_dir + 'wrapper.bat')
+shell_wrapper = File.read(asset_dir + 'wrapper.sh')
+
 common_platform_config = {
-  app_name:           'seeing_is_believing',
-  app_version:        '3.0.0.beta.5',
-  executable_name:    'seeing_is_believing',
-  executable_format:  :unix_shell,
-  binary_host:        'http://d6r77u77i8pq3.cloudfront.net/releases',
-  ruby_build_date:    '20150210',
-  ruby_version:       '2.2.0',
-  compression_format: '.tar.gz',
+  app_name:               'seeing_is_believing',
+  app_version:            '3.0.0.beta.5',
+  executable_name:        'seeing_is_believing',
+  executable_format:      :unix_shell,
+  binary_host:            'http://d6r77u77i8pq3.cloudfront.net/releases',
+  traveling_ruby_version: '20150210-2.2.0',
+  compression_format:     '.tar.gz',
+  executable:             shell_wrapper,
 }
+
+platform_for = lambda do |overrides|
+  config = common_platform_config.merge overrides
+  Platform.new config
+end
 
 build = Build.new(
   fs:        FileSystem.new,
@@ -108,9 +115,14 @@ build = Build.new(
   name:      'seeing_is_believing',
   version:   '3.0.0.beta.5',
   platforms: [
-    Platform.new(common_platform_config.merge platform_name: 'linux-x86'),
-    Platform.new(common_platform_config.merge platform_name: 'linux-x86_64'),
-    Platform.new(common_platform_config.merge platform_name: 'linux-osx'),
+    platform_for.call(platform_name:          'linux-x86'),
+    platform_for.call(platform_name:          'linux-x86_64'),
+    platform_for.call(platform_name:          'linux-osx'),
+    platform_for.call(platform_name:          'win32',
+                      traveling_ruby_version: '20150210-2.1.5',
+                      compression_format:     '.zip',
+                      executable:             batch_wrapper,
+    ),
   ],
 )
 
