@@ -89,7 +89,7 @@ class UserInterface
 end
 
 require 'pathname'
-root_dir      = Pathname.new __dir__
+root_dir      = Pathname.new(__dir__) + '..'
 asset_dir     = root_dir + 'assets'
 batch_wrapper = File.read(asset_dir + 'wrapper.bat') # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-4.md
 shell_wrapper = File.read(asset_dir + 'wrapper.sh')  # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-1.md
