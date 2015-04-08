@@ -49,10 +49,10 @@ end
 
 
 class Build # the noun version
-  attr_accessor :name, :version, :platforms, :fs, :ui
+  attr_accessor :name, :version, :platforms, :world, :ui
 
-  def initialize(name:, version:, platforms:, fs:, ui:)
-    self.fs        = fs
+  def initialize(name:, version:, platforms:, world:, ui:)
+    self.world     = world
     self.ui        = ui
     self.name      = name
     self.version   = version
@@ -76,7 +76,7 @@ class Build # the noun version
 end
 
 
-class FileSystem
+class World
 end
 
 class UserInterface
@@ -110,8 +110,8 @@ platform_for = lambda do |overrides|
 end
 
 build = Build.new(
-  fs:        FileSystem.new,
   ui:        UserInterface.new(outstream: $stdout, errstream: $stderr),
+  world:     World.new,
   name:      'seeing_is_believing',
   version:   '3.0.0.beta.5',
   platforms: [
