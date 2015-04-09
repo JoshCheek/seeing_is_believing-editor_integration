@@ -31,10 +31,9 @@ module TravelingRuby
         # Create the wrapper
         # cp packaging/wrapper.sh hello-1.0.0-linux-x86/hello
         # chmod +x packaging/wrapper.sh
-        world.memoize filename: platform.wrapper_path do |file|
+        world.memoize filename: platform.wrapper_path, permissions: 0755 do |file|
           file.write platform.wrapper_body
         end
-        world.chmod file: platform.wrapper_path, permissions: 0755
 
         world.compress source: platform.package_dir, dest: platform.dest_path
         # # From a user's perspective

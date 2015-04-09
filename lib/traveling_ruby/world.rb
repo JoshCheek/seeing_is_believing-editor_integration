@@ -4,10 +4,14 @@ require 'net/http'
 
 module TravelingRuby
   class World
-    def memoize(filename:, &setter)
+    def memoize(filename:, permissions: nil, &setter)
       return if File.exist? filename
       dir! File.dirname(filename)
       File.open filename, 'w', &setter
+    ensure
+      return unless permissions
+      return if 0777&permissions == 0777&File.stat(filename).mode
+      File.chmod permissions, filename
     end
 
     def dir!(path)
@@ -44,6 +48,10 @@ module TravelingRuby
         write.close
       end
       Process.wait tar_pid
+    end
+
+    def chmod(filename:, permissions:)
+      File.chmod(permissions, filename)
     end
 
   end
