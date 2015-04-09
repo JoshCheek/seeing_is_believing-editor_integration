@@ -11,8 +11,6 @@ module TravelingRuby
 
     def build
       platforms.each do |platform|
-        compressed_ruby = in_working_dir(platform.traveling_ruby_filename)
-
         # Download TravelingRuby
         # curl -L -O --fail http://d6r77u77i8pq3.cloudfront.net/releases/traveling-ruby-20141215-2.1.5-linux-x86.tar.gz
         #
@@ -24,7 +22,7 @@ module TravelingRuby
         #          file part of the remote file is used, the path is cut off.)
         #
         # --fail:  Fail  silently  (no output at all) on server errors.
-        world.memoize filename: compressed_ruby do |file|
+        world.memoize filename: platform.compressed_ruby do |file|
           world.get url:  platform.traveling_ruby_url, file: file
         end
 

@@ -6,6 +6,7 @@ require 'traveling_ruby'
 require 'pathname'
 root_dir      = Pathname.new(__dir__) + '..'
 asset_dir     = root_dir + 'assets'
+working_dir   = root_dir + 'working'
 batch_wrapper = File.read(asset_dir + 'wrapper.bat') # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-4.md
 shell_wrapper = File.read(asset_dir + 'wrapper.sh')  # from https://github.com/phusion/traveling-ruby/blob/de57f6f472649c5754d2e946916a367e6488ad7d/TUTORIAL-1.md
 
@@ -18,6 +19,7 @@ common_platform_config = {
   wrapper_name:           'seeing_is_believing',
   wrapper_body:           shell_wrapper,
   gemfile:                asset_dir + 'Gemfile',
+  working_dir:            working_dir,
 }
 
 platform_for = lambda do |overrides|

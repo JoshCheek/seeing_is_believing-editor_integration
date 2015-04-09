@@ -9,7 +9,8 @@ module TravelingRuby
                   :wrapper_body,
                   :binary_host,
                   :traveling_ruby_version,
-                  :compression_format
+                  :compression_format,
+                  :working_dir
 
     def initialize(app_name:,
                    app_version:,
@@ -19,7 +20,8 @@ module TravelingRuby
                    wrapper_body:,
                    binary_host:,
                    traveling_ruby_version:,
-                   compression_format:)
+                   compression_format:,
+                   working_dir:)
       self.app_name               = app_name
       self.app_version            = app_version
       self.gemfile                = gemfile
@@ -29,6 +31,7 @@ module TravelingRuby
       self.binary_host            = binary_host
       self.traveling_ruby_version = traveling_ruby_version
       self.compression_format     = compression_format
+      self.working_dir            = working_dir
     end
 
     def package_dir
@@ -49,6 +52,14 @@ module TravelingRuby
 
     def wrapper_path
       File.join package_dir, wrapper_path
+    end
+
+    def compressed_ruby
+      in_working_dir traveling_ruby_filename
+    end
+
+    def in_working_dir(path)
+      File.join working_dir, path
     end
   end
 end
