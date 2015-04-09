@@ -12,11 +12,11 @@ shell_wrapper = File.read(asset_dir + 'wrapper.sh')  # from https://github.com/p
 common_platform_config = {
   app_name:               'seeing_is_believing',
   app_version:            '3.0.0.beta.5',
-  executable_name:        'seeing_is_believing',
   binary_host:            'http://d6r77u77i8pq3.cloudfront.net/releases',
   traveling_ruby_version: '20150210-2.2.0',
   compression_format:     '.tar.gz',
-  executable:             shell_wrapper,
+  wrapper_name:           'seeing_is_believing',
+  wrapper_body:           shell_wrapper,
   gemfile:                asset_dir + 'Gemfile',
 }
 
@@ -35,7 +35,7 @@ build = TravelingRuby::Build.new(
     platform_for.call(platform_name:          'win32',
                       traveling_ruby_version: '20150210-2.1.5',
                       compression_format:     '.zip',
-                      executable:             batch_wrapper,
+                      wrapper_body:           batch_wrapper,
     ),
   ],
 )

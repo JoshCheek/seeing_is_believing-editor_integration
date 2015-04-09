@@ -5,8 +5,8 @@ module TravelingRuby
                   :app_version,
                   :gemfile,
                   :platform_name,
-                  :executable_name,
-                  :executable,
+                  :wrapper_name,
+                  :wrapper_body,
                   :binary_host,
                   :traveling_ruby_version,
                   :compression_format
@@ -15,8 +15,8 @@ module TravelingRuby
                    app_version:,
                    gemfile:,
                    platform_name:,
-                   executable_name:,
-                   executable:,
+                   wrapper_name:,
+                   wrapper_body:,
                    binary_host:,
                    traveling_ruby_version:,
                    compression_format:)
@@ -24,8 +24,8 @@ module TravelingRuby
       self.app_version            = app_version
       self.gemfile                = gemfile
       self.platform_name          = platform_name
-      self.executable_name        = executable_name
-      self.executable             = executable
+      self.wrapper_name           = wrapper_name
+      self.wrapper_body           = wrapper_body
       self.binary_host            = binary_host
       self.traveling_ruby_version = traveling_ruby_version
       self.compression_format     = compression_format
@@ -39,12 +39,16 @@ module TravelingRuby
       File.join package_dir, 'lib', 'app'
     end
 
-    def binary_name
+    def traveling_ruby_filename
       "traveling-ruby-#{traveling_ruby_version}-#{platform_name}.tar.gz"
     end
 
-    def ruby_binary_url
-      File.join binary_host, binary_name
+    def traveling_ruby_url
+      File.join binary_host, traveling_ruby_filename
+    end
+
+    def wrapper_path
+      File.join package_dir, wrapper_path
     end
   end
 end

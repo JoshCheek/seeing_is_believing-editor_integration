@@ -10,18 +10,55 @@ module TravelingRuby
     end
 
     def build
-      # download SiB from Rubygems, unless it is already downloaded
-      # https://rubygems.org/downloads/seeing_is_believing-3.0.0.beta.5.gem
+      platforms.each do |platform|
+        compressed_ruby = in_working_dir(platform.traveling_ruby_filename)
 
-      # for each platform
-      #   make its package_dir                 mkdir -p hello-1.0.0-osx/lib/app
-      #   copy SiB into it                     cp -r sib_dir hello-1.0.0-osx/lib/app/
-      #   download the associated binary       curl -L -O --fail http://d6r77u77i8pq3.cloudfront.net/releases/traveling-ruby-20141215-2.1.5-osx.tar.gz
-      #   extract it into the packsage         mkdir hello-1.0.0-osx/lib/ruby &&
-      #                                        tar -xzf packaging/traveling-ruby-20141215-2.1.5-osx.tar.gz -C hello-1.0.0-osx/lib/ruby
-      #   write the wrapper script if it DNE   write it to: hello-1.0.0-osx/hello
-      #   Make it executable                   chmod +x hello-1.0.0-osx/hello                          <-- is this still true for Windows?
-      #   compress the script                  tar -czf hello-1.0.0-linux-x86.tar.gz hello-1.0.0-osx   <-- Windows?
+        # Download TravelingRuby
+        # curl -L -O --fail http://d6r77u77i8pq3.cloudfront.net/releases/traveling-ruby-20141215-2.1.5-linux-x86.tar.gz
+        #
+        # -L:      If the server reports that the requested page has moved to a different
+        #          location (indicated with a Location: header and  a  3XX  response
+        #          code),  this  option  will  make curl redo the request on the new place.
+        #
+        # -O:      Write  output  to a local file named like the remote file we get. (Only the
+        #          file part of the remote file is used, the path is cut off.)
+        #
+        # --fail:  Fail  silently  (no output at all) on server errors.
+        world.memoize filename: compressed_ruby do |file|
+          world.get url:  platform.traveling_ruby_url, file: file
+        end
+
+        # Extract TravelingRuby
+        # mkdir hello-1.0.0-linux-x86/lib/ruby
+        # tar -xzf packaging/traveling-ruby-20141215-2.1.5-linux-x86.tar.gz -C hello-1.0.0-linux-x86/lib/ruby
+        # -C: continue from previous work
+        world.decompress source: compressed_ruby, dest: platform.ruby_dir
+
+        # Install the dependencies
+        # here, we'll need Bundler
+        # FIXME!
+
+        # # Quick sanity testing
+        # cd hello-1.0.0-osx
+        # ./lib/ruby/bin/ruby lib/app/hello.rb # => hello world
+        # cd ..
+        require "pry"
+        binding.pry
+
+        # Create the wrapper
+        # cp packaging/wrapper.sh hello-1.0.0-linux-x86/hello
+        # chmod +x packaging/wrapper.sh
+        world.memoize filename: platform.wrapper_path do |file|
+          file.write platform.wrapper_body
+        end
+        world.chmod file: platform.wrapper_path, permissions: 0755
+
+        world.compress source: platform.package_dir, dest: platform.dest_path
+        # # From a user's perspective
+        # The user downloads hello-1.0.0-linux-x86.tar.gz.
+        # The user extracts this file.
+        # /path-to/hello-1.0.0-linux-x86/hello
+      end
     end
   end
 end
