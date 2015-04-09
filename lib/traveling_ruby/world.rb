@@ -1,3 +1,5 @@
+require 'zlib'
+require 'open3'
 require 'net/http'
 
 module TravelingRuby
@@ -22,6 +24,26 @@ module TravelingRuby
           response.read_body &file.method(:write)
         end
       end
+    end
+
+
+    def extract(source:, destination:)
+      dir! destination
+
+      # There's a tar lib that was edited in December
+      # https://github.com/halostatue/minitar (I think I met that dude at Rubyconf!)
+      #
+      # But the gem hasn't been updated since 2008
+      # https://rubygems.org/gems/archive-tar-minitar
+      #
+      # So, going to shell out for now, just b/c it's easier than figuring that out.
+      read, write = IO.pipe
+      tar_pid = spawn "tar", '-x', '-f', '-', '-C', destination, in: read
+      Zlib::GzipReader.open source do |gz|
+        write.write gz.read
+        write.close
+      end
+      Process.wait tar_pid
     end
 
   end

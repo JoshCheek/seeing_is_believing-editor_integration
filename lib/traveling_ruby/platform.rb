@@ -35,11 +35,15 @@ module TravelingRuby
     end
 
     def package_dir
-      File.join app_name.to_s, app_version.to_s, platform_name.to_s
+      "#{app_name}-#{app_version}-#{platform_name}"
     end
 
     def app_dir
       File.join package_dir, 'lib', 'app'
+    end
+
+    def ruby_dir
+      File.join package_dir, 'lib', 'ruby'
     end
 
     def traveling_ruby_filename
@@ -51,7 +55,7 @@ module TravelingRuby
     end
 
     def wrapper_path
-      File.join package_dir, wrapper_path
+      File.join package_dir, wrapper_name
     end
 
     def compressed_ruby
