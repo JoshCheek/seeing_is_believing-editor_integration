@@ -17,14 +17,9 @@ module TravelingRuby
     def get(url:, file:)
       # from https://github.com/ruby/ruby/blob/2afed6eceff2951b949db7ded8167a75b431bad6/lib/net/http.rb#L236
       uri = URI(url)
-
       Net::HTTP.start uri.host, uri.port do |http|
-        request = Net::HTTP::Get.new uri
-
-        http.request request do |response|
-          response.read_body do |chunk|
-            file.write chunk
-          end
+        http.request Net::HTTP::Get.new(uri) do |response|
+          response.read_body &file.method(:write)
         end
       end
     end
