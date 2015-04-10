@@ -6,6 +6,32 @@ Using Bundler for dependency management
     or maybe can set PATH/RUBYPATH and RUBYLIB?
     Seems a lot easier to get the info I need from Bundler than Rubygems.
 
+    Omg, this page is amazing!
+      http://bundler.io/bundle_install.html
+
+      --binstubs:   Generate bin stubs for bundled gems to ./bin
+      --gemfile:    Use the specified gemfile instead of Gemfile
+      --local:      Do not attempt to fetch gems remotely and use the gem cache instead
+      --shebang:    Specify a different shebang executable name than the default (usually 'ruby')
+      --standalone: Make a bundle that can work without the Bundler runtime
+
+      $ bundle install --path vendor/bundle
+        Install your dependencies, even gems that are already installed to your system gems,
+        to a location other than your system's gem repository.
+        In this case, install them to vendor/bundle.
+        Further bundle commands or calls to Bundler.
+        setup or Bundler.require will remember this location.
+
+      $ bundle install --deployment
+        Isolate all gems into vendor/bundle
+        Require an up-to-date Gemfile.lock
+        If bundle package was run, do not fetch gems from rubygems.org. Instead, only use gems in the checked in vendor/cache
+
+      bundle package
+      bundle install --local --gemfile some/Gemfile --path some/fucking/path
+
+
+
 Using Rubygems for dependency management
 
   # Some code that might do it (Rubygems)
