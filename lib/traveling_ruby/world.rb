@@ -54,5 +54,23 @@ module TravelingRuby
       File.chmod(permissions, filename)
     end
 
+    def compress(source:, dest:)
+      return if File.exist? dest
+      source_dir      = File.dirname  source
+      source_filename = File.basename source
+      dest_dir        = File.dirname  dest
+      dest_filename   = File.basename dest
+
+      dir! dest_dir
+      if dest_filename.end_with? '.tar.gz'
+        tar_pid = Dir.chdir source_dir do
+          spawn 'tar', '-c', '-z', '-f', dest, source_filename
+        end
+        Process.wait tar_pid
+      else
+        raise "FORMAT NOT SUPPORTED YET!: #{dest_filename.inspect}}"
+      end
+    end
+
   end
 end

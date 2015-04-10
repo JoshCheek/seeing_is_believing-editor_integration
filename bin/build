@@ -35,7 +35,7 @@ build = TravelingRuby::Build.new(
   platforms: [
     platform_for.call(platform_name:          'linux-x86'),
     platform_for.call(platform_name:          'linux-x86_64'),
-    platform_for.call(platform_name:          'linux-osx'),
+    platform_for.call(platform_name:          'osx'),
     platform_for.call(platform_name:          'win32',
                       traveling_ruby_version: '20150210-2.1.5',
                       compression_format:     '.zip',

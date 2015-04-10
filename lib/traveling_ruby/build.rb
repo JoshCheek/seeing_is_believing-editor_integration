@@ -35,7 +35,8 @@ module TravelingRuby
           file.write platform.wrapper_body
         end
 
-        world.compress source: platform.package_dir, dest: platform.dest_path
+        world.compress source: platform.package_dir,
+                       dest:   platform.dest_path
         # # From a user's perspective
         # The user downloads hello-1.0.0-linux-x86.tar.gz.
         # The user extracts this file.

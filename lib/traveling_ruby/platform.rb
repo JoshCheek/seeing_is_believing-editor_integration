@@ -38,7 +38,7 @@ module TravelingRuby
     end
 
     def package_dir
-      File.join build_dir, "#{app_name}-#{app_version}-#{platform_name}"
+      File.join build_dir, package_name
     end
 
     def app_dir
@@ -47,6 +47,10 @@ module TravelingRuby
 
     def ruby_dir
       File.join package_dir, 'lib', 'ruby'
+    end
+
+    def package_name
+      "#{app_name}-#{app_version}-#{platform_name}"
     end
 
     def traveling_ruby_filename
@@ -63,6 +67,10 @@ module TravelingRuby
 
     def compressed_ruby
       File.join cache_dir, traveling_ruby_filename
+    end
+
+    def dest_path
+      File.join build_dir, "#{package_name}#{compression_format}"
     end
   end
 end
