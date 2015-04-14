@@ -1,3 +1,38 @@
+This is what it means to install a gem:
+
+  # Gem::Installer does the work of putting files in all the right places on the
+  # filesystem including unpacking the gem into its gem dir, installing the
+  # gemspec in the specifications dir, storing the cached gem in the cache dir,
+  # and installing either wrappers or symlinks for executables.
+
+  Gem::Installer
+
+    install_dir is gem_home
+
+    # Constructs an Installer instance that will install the gem located at
+    # +gem+.  +options+ is a Hash with the following keys:
+    #
+    # :bin_dir:: Where to put a bin wrapper if needed.
+    # :development:: Whether or not development dependencies should be installed.
+    # :env_shebang:: Use /usr/bin/env in bin wrappers.
+    # :force:: Overrides all version checks and security policy checks, except
+    #          for a signed-gems-only policy.
+    # :format_executable:: Format the executable the same as the Ruby executable.
+    #                      If your Ruby is ruby18, foo_exec will be installed as
+    #                      foo_exec18.
+    # :ignore_dependencies:: Don't raise if a dependency is missing.
+    # :install_dir:: The directory to install the gem into.
+    # :security_policy:: Use the specified security policy.  See Gem::Security
+    # :user_install:: Indicate that the gem should be unpacked into the users
+    #                 personal gem directory.
+    # :only_install_dir:: Only validate dependencies against what is in the
+    #                     install_dir
+    # :wrappers:: Install wrappers if true, symlinks if false.
+    # :build_args:: An Array of arguments to pass to the extension builder
+    #               process. If not set, then Gem::Command.build_args is used
+
+
+
 Using Bundler for dependency management
   Looks like I can do (http://myronmars.to/n/dev-blog/2012/03/faster-test-boot-times-with-bundler-standalone)
     $ bundle install --standalone --binstubs bundle/bin
